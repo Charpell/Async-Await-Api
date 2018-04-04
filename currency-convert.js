@@ -9,35 +9,21 @@ const getExchangeRate = (from, to) => {
   })
 }
 
-getExchangeRate('USD', 'EUR').then((rate) => {
-  console.log(rate)
-})
-
-
 const getCountries = (currencyCode) => {
   return axios.get(`https://restcountries.eu/rest/v2/currency/${currencyCode}`).then((response) => {
     return response.data.map((country) => country.name)
   })
 }
 
-getCountries('ngn').then((countries) => {
-  console.log(countries)
-})
 
+// Using Asyn and Await
+const convertCurrency = async (from, to, amount) => {
+  const countries = await getCountries(to);
+  const rate = await getExchangeRate(from, to);
+  const exchangeAmount = amount * rate;
 
-// Using Promises
-const convertCurrency = (from, to, amount) => {
-  let countries;
-  return getCountries(to).then((tempCountries) => {
-    countries = tempCountries
-    return getExchangeRate(from, to);
-  }).then((rate) => {
-    const exchangeAmount = amount * rate;
-
-    return `${amount} ${from} is worth ${exchangeAmount} ${to}. ${to} can be used in the following countries: ${countries.join(', ')}`
-  })
+  return `${amount} ${from} is worth ${exchangeAmount} ${to}. ${to} can be used in the following countries: ${countries.join(', ')}`  
 }
-
 
 convertCurrency('CAD', 'USD', 100).then((status) => {
   console.log(status)
